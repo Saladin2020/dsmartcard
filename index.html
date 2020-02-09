@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/ionicons.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="assets/fonts/kanit.css">
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/sweetalert2.all.min.js"></script>
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+            padding-top: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <h3>dsSmartcard</h3>
+        <form id="form_register" action="" method="GET">
+            <button type="submit" name="" id="" class="btn btn-secondary btn-block">GET</button>
+        </form>
+        <hr>
+        <form action="http://localhost/smartcard_reciever/index.php" method="POST">
+            <button type="submit" name="" id="" class="btn btn-warning btn-block">SEND</button>
+            <hr>
+            <img class="img-thumbnail" width="148" height="178" id="image_show" src="" alt="current image" />
+
+            <input id="image_send" type="hidden" name="image_send" value="">
+            <div class="form-group">
+                <label for="status">Status : </label>
+                <input class="form-control" id="status" type="text" name="status" value="">
+            </div>
+            <div class="form-group">
+                <label for="idnumber">ID NUMBER : </label>
+                <input class="form-control" id="idnumber" type="text" name="idnumber" value="">
+            </div>
+            <div class="form-group">
+                <label for="thainame">Thai name : </label>
+                <input class="form-control" id="thainame" type="text" name="thainame" value="">
+            </div>
+            <div class="form-group">
+                <label for="englishname">English name : </label>
+                <input class="form-control" id="englishname" type="text" name="englishname" value="">
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender : </label>
+                <input class="form-control" id="gender" type="text" name="gender" value="">
+            </div>
+            <div class="form-group">
+                <label for="dob">Date of Birth : </label>
+                <input class="form-control" id="dob" type="text" name="dob" value="">
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address : </label>
+                <input class="form-control" id="address" type="text" name="address" value="">
+            </div>
+            <div class="form-group">
+                <label for="issueexpire">ISSUE EXPIRE : </label>
+                <input class="form-control" id="issueexpire" type="text" name="issueexpire" value="">
+            </div>
+
+        </form>
+    </div>
+
+</body>
+<script>
+    $("#form_register").submit(function (event) {
+        event.preventDefault();
+        var get_data = 'http://127.0.0.1:5000/get_data';
+        var get_photo_byte = 'http://127.0.0.1:5000/get_photo_byte';
+
+        $.get(get_data, '', function (response) {
+            if (response.status == "active") {
+                document.getElementById("status").setAttribute('value', response.status);
+                document.getElementById("idnumber").setAttribute('value', response.idnumber);
+                document.getElementById("thainame").setAttribute('value', response.thainame);
+                document.getElementById("englishname").setAttribute('value', response.englishname);
+                document.getElementById("gender").setAttribute('value', response.gender);
+                document.getElementById("dob").setAttribute('value', response.dob);
+                document.getElementById("address").setAttribute('value', response.address);
+                document.getElementById("issueexpire").setAttribute('value', response.issueexpire);
+
+                $.get(get_photo_byte, '', function (response) {
+                    document.getElementById("image_show").setAttribute('src', "photos/current.jpeg");
+                    document.getElementById("image_send").setAttribute('value', response);
+                });
+
+            } else {
+                Swal.fire(
+                    response.status,
+                    response.status,
+                    'error'
+                );
+                document.getElementById("status").setAttribute('value', "");
+                document.getElementById("idnumber").setAttribute('value', "");
+                document.getElementById("thainame").setAttribute('value', "");
+                document.getElementById("englishname").setAttribute('value', "");
+                document.getElementById("gender").setAttribute('value', "");
+                document.getElementById("dob").setAttribute('value', "");
+                document.getElementById("address").setAttribute('value', "");
+                document.getElementById("issueexpire").setAttribute('value', "");
+                document.getElementById("image_show").setAttribute('src', "");
+                document.getElementById("image_send").setAttribute('value', "");
+
+            }
+
+        });
+    });
+</script>
+
+</html>
