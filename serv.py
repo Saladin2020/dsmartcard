@@ -11,7 +11,12 @@ from smartcard.util import toHexString, toBytes
 import json
 import base64
 import threading
-import PySimpleGUIQt as sg
+
+from pystray import MenuItem as item
+import pystray
+from PIL import Image
+import tkinter 
+
 from werkzeug.serving import make_server
 
 tis620encoding = {
@@ -407,24 +412,26 @@ def get_photo_json():
 # End get_photo
 
 
-def tray_me():
-    menu_def = [
-        'BLANK',
-        ['About',
-         '---',
-         'Exit'
-         ]
-    ]
+def about_me():
+    root = tkinter.Tk() 
+    w = tkinter.Label(root, text='Custom by Saladin2020') 
+    w.pack() 
+    root.mainloop() 
 
-    tray = sg.SystemTray(menu=menu_def, filename=r'saladin.ico')
-    while True:  # The event loop
-        menu_item = tray.Read()
-        print(menu_item)
-        if menu_item == 'Exit':
-            stop_server()
-            break
-        elif menu_item == 'About':
-            sg.Popup('Custom by Saladin2020', menu_item)
+def exit_me():
+    global icon
+    stop_server()
+    icon.stop()
+
+
+
+def tray_me():
+    global icon
+    image = Image.open("saladin.ico")
+    menu = pystray.Menu(item('about', about_me), item('exit', exit_me))
+    icon = pystray.Icon("ds_local_server", image, "ds_local_server", menu)
+    icon.run()
+
 
 
 class ServerThread(threading.Thread):
@@ -456,3 +463,9 @@ def stop_server():
 if __name__ == "__main__":
     start_server(app)
     tray_me()
+
+
+
+
+
+
